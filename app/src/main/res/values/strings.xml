@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Бухгалтерия</string>
+    <string name="account_name">Введите название счета</string>
+    <string name="add">Добавить</string>
+    <string name="cancel">Отмена</string>
+    <string name="ruble">RUB</string>
+    <string name="add_account">Добавить счет</string>
+    <string name="top_up">Пополнить</string>
+    <string name="transaction">Перевести</string>
+    <string name="operations">Последнии операции:</string>
+    <string name="top_up_account">Пополнить счет</string>
+    <string name="sum">Сумма</string>
+    <string name="comment">Комментарий</string>
+    <string name="currency">Валюта:</string>
+    <string name="ok">OK</string>
+    <string name="slash">/</string>
+    <string name="my_accounts">Мои счета</string>
+    <string name="my_operations">Мои операции</string>
+
+    <string-array name="currency">
+        <item>RUB</item>
+        <item>USD</item>
+        <item>EUR</item>
+        <item>SGD</item>
+        <item>MYR</item>
+        <item>AUD</item>
+        <item>JPY</item>
+        <item>CNH</item>
+        <item>HKD</item>
+        <item>CAD</item>
+        <item>INR</item>
+        <item>DKK</item>
+        <item>GBP</item>
+        <item>NZD</item>
+        <item>MXN</item>
+        <item>IDR</item>
+        <item>TWD</item>
+        <item>THB</item>
+        <item>VND</item>
+    </string-array>
+
+</resources>
