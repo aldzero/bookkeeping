@@ -29,17 +29,23 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        // Устанавливаем тулбар
         toolbar = findViewById(R.id.toolbar)
+
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        updateCurrencies()
+
+
+        updateCurrencies()   // Функция обновления курса валют с API
+
         addAccountButton = findViewById(R.id.addAccount)
         list = findViewById(R.id.accountView)
-        databaseHelper = DatabaseHelper(this)
+        databaseHelper = DatabaseHelper(this) // Инициализация БД
 
-        initAddAccountDialog()
-        itemClick()
+        initAddAccountDialog() // Инициализация диалогового окна
+        itemClick() // Объявление события при клике на итем списка ListView
 
+        // Открытия диалогового окна для добавления счета
         addAccountButton.setOnClickListener {
             dialog.show()
         }
@@ -54,11 +60,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    // Получение счетов с БД и инициализация адаптера для ListView
     private fun showItems(){
         list = findViewById(R.id.accountView)
         val headers = arrayOf("name", "funds")
         val db = databaseHelper.readableDatabase
-
         val userCursor = db.rawQuery("SELECT * FROM " + databaseHelper.table_accounts, null)
         val userAdapter =  SimpleCursorAdapter(this, R.layout.account_list_item,
                 userCursor, headers, intArrayOf(R.id.text1, R.id.text2), 0)
@@ -83,6 +89,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initAddAccountDialog(){
+        // Инициализация диалогового окна
         dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_add_account)
         dialog.setCanceledOnTouchOutside(false)
@@ -90,9 +97,11 @@ class MainActivity : AppCompatActivity() {
         val addButton = dialog.findViewById<Button>(R.id.add_button)
         val cancelButton = dialog.findViewById<Button>(R.id.cancel_button)
 
+        // Добавление нового счета
         addButton.setOnClickListener{
             val db = databaseHelper.writableDatabase
             val name = accountName.text.toString().capitalize()
+            // Если пользователь ничего не ввел появляется сообщение об ошибке
             if (name == ""){
                 val alert =  AlertDialog.Builder(this)
                         .setTitle("Ошибка")
@@ -102,12 +111,14 @@ class MainActivity : AppCompatActivity() {
                 alert.show()
                 return@setOnClickListener
             }
+            // Запрос на добавление нового счета
             db.beginTransaction()
             try {
                 db.execSQL("INSERT INTO accounts (name, funds) VALUES ('$name', 0);")
                 db.setTransactionSuccessful()
                 showItems()
             }
+            // Если уникальность нарушена, появляется сообщение об ошибке
             catch (e: SQLiteConstraintException){
 
                 val alert =  AlertDialog.Builder(this)
@@ -137,9 +148,10 @@ class MainActivity : AppCompatActivity() {
                 "GBP", "RUB", "NZD", "MXN", "IDR", "TWD", "THB", "VND")
         val client = OkHttpClient()
 
+        // Обновляем курсы всех валют в таблице
         for (currency in currencies) {
 
-
+            // Создание HTTP запроса
             val request = Request.Builder()
                     .url("https://currency-exchange.p.rapidapi.com/exchange?to=RUB&from=$currency&q=1.0")
                     .get()
@@ -152,11 +164,13 @@ class MainActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
 
+
                 override fun onResponse(call: Call, response: Response) {
                     response.use {
                         if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
-                        val json = response.body?.string()
+                        val json = response.body?.string() // Получаем ответ с сервера
+                        // Записываем в бд
 
                         val db = databaseHelper.writableDatabase
                         db.beginTransaction()
